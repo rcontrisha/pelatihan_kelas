@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pelatihan_kelas/login_screen.dart';
+import 'package:pelatihan_kelas/modules/Login/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LoginScreen(),
+      home: LoginScreen(),
     );
   }
 }
