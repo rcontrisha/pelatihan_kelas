@@ -25,7 +25,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
   }
 
   String baseUrl =
-      'http://172.16.7.93:8000/storage/'; // Ganti dengan URL basis API Anda
+      'http://192.168.114.163:8000/storage/'; // Ganti dengan URL basis API Anda
 
   @override
   Widget build(BuildContext context) {

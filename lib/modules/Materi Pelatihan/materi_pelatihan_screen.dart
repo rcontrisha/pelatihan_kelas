@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pelatihan_kelas/services/api_services.dart';
-import 'package:pelatihan_kelas/widgets/youtube_player_screen.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class MateriPelatihanScreen extends StatefulWidget {
   final int pelatihanId;
@@ -251,7 +250,39 @@ class _MateriPelatihanScreenState extends State<MateriPelatihanScreen> {
   }
 
   String getFullFileUrl(String filePath) {
-    const String baseUrl = "http://192.168.1.23:8000";
+    const String baseUrl = "http://192.168.114.163:8000";
     return "$baseUrl/storage/$filePath";
+  }
+}
+
+class FullScreenYoutubePlayer extends StatelessWidget {
+  final String youtubeLink;
+
+  const FullScreenYoutubePlayer({Key? key, required this.youtubeLink})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Fullscreen Video'),
+      ),
+      body: Center(
+        child: YoutubePlayer(
+          controller: YoutubePlayerController(
+            initialVideoId: YoutubePlayer.convertUrlToId(youtubeLink)!,
+            flags: const YoutubePlayerFlags(
+              autoPlay: true,
+              mute: false,
+              enableCaption: false,
+            ),
+          ),
+          showVideoProgressIndicator: true,
+          onReady: () {
+            // Do something when the player is ready.
+          },
+        ),
+      ),
+    );
   }
 }

@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 
 class ApiService {
   final String baseUrl =
-      'http://172.16.7.93:8000/api'; // Ganti dengan URL API Anda
+      'http://192.168.114.163:8000/api'; // Ganti dengan URL API Anda
   final FlutterSecureStorage storage = FlutterSecureStorage();
 
   // Registrasi pengguna
@@ -235,6 +235,74 @@ class ApiService {
       // Handle error response
       return null;
     }
+  }
+
+  // Fungsi untuk mengedit materi
+  Future<bool> updateMateri(
+      int id, String judul, String deskripsi, String linkVideo,
+      {String? filePath}) async {
+    if (filePath == null) {
+      // Jika tidak ada file, gunakan http.put
+      return await updateMateriWithoutFile(id, judul, deskripsi, linkVideo);
+    } else {
+      // Jika ada file, gunakan MultipartRequest
+      return await updateMateriWithFile(
+          id, judul, deskripsi, linkVideo, filePath);
+    }
+  }
+
+  Future<bool> updateMateriWithoutFile(
+      int id, String judul, String deskripsi, String linkVideo) async {
+    final token = await storage.read(key: 'token');
+
+    var headers = {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    };
+
+    var body = jsonEncode({
+      'judul': judul,
+      'deskripsi': deskripsi,
+      'link_video': linkVideo.isNotEmpty ? linkVideo : null,
+    });
+
+    var response = await http.put(
+      Uri.parse('$baseUrl/materi/$id'),
+      headers: headers,
+      body: body,
+    );
+
+    print('Response status code: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    return response.statusCode == 200;
+  }
+
+  Future<bool> updateMateriWithFile(int id, String judul, String deskripsi,
+      String linkVideo, String filePath) async {
+    final token = await storage.read(key: 'token');
+
+    var request =
+        http.MultipartRequest('PUT', Uri.parse('$baseUrl/materi/$id'));
+    request.headers['Authorization'] = 'Bearer $token';
+    request.headers['Accept'] = 'application/json';
+
+    request.fields['judul'] = judul;
+    request.fields['deskripsi'] = deskripsi;
+    if (linkVideo.isNotEmpty) {
+      request.fields['link_video'] = linkVideo;
+    }
+
+    request.files.add(await http.MultipartFile.fromPath('file_path', filePath));
+
+    var response = await request.send();
+
+    print('Response status code: ${response.statusCode}');
+    var responseBody = await response.stream.bytesToString();
+    print('Response body: $responseBody');
+
+    return response.statusCode == 200;
   }
 
   // Mendapatkan daftar tugas berdasarkan ID pelatihan

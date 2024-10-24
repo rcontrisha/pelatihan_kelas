@@ -16,7 +16,7 @@ class AkunScreen extends StatefulWidget {
 
 class _AkunScreenState extends State<AkunScreen> {
   String baseUrl =
-      'http://172.16.7.93:8000/storage/'; // Ganti dengan URL server Anda
+      'http://192.168.114.163:8000/storage/'; // Ganti dengan URL server Anda
   ApiService apiService = ApiService();
   Map<String, dynamic>? userProfile;
   XFile? profileImage; // Variabel untuk menyimpan gambar profil

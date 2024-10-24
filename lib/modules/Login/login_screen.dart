@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pelatihan_kelas/modules/Login/login_controller.dart';
-import '../Registration/registration_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -85,7 +84,7 @@ class LoginScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const RegistrationScreen()),
+                            builder: (context) => LoginScreen()),
                       );
                     },
                     child: const Text('Belum Punya Akun?'),
