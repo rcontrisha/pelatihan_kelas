@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pelatihan_kelas/modules/Akun/akun_screen.dart';
 import 'package:pelatihan_kelas/modules/Beranda/informasi_pelatihan_screen.dart';
 import 'package:pelatihan_kelas/modules/Monitoring/monitoring_screen.dart';
+
+import '../Beranda/informasi_pelatihan_pengajar_screen.dart';
+import '../Monitoring/monitoring_pengajar_screen.dart';
 
 class InformasiLayananScreen extends StatefulWidget {
   const InformasiLayananScreen({Key? key}) : super(key: key);
@@ -89,25 +93,42 @@ class _InformasiLayananScreenState extends State<InformasiLayananScreen> {
 
   // Fungsi untuk membangun tombol tab
   Widget _buildTabButton(String text, int index) {
+    final FlutterSecureStorage storage = FlutterSecureStorage();
     bool isActive = _selectedTabIndex == index; // Cek apakah tab ini aktif
 
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
+        final role = await storage.read(key: 'role');
+
         setState(() {
           _selectedTabIndex = index; // Ubah tab yang aktif
         });
 
         // Aksi ketika tab di-klik berdasarkan index
         if (index == 0) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const InformasiPelatihanScreen()));
+          if (role == 'pengajar') {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const InformasiPelatihanPengajarScreen()));
+          } else if (role == 'user'){
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const InformasiPelatihanScreen()));
+          }
         } else if (index == 1) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const MonitoringScreen()));
+          if (role == 'pengajar') {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const MonitoringScreenPengajar()));
+          } else if (role == 'user'){
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const MonitoringScreen()));
+          }
         } else if (index == 2) {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const AkunScreen()));

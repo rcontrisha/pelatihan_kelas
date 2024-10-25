@@ -137,6 +137,35 @@ class ApiService {
     }
   }
 
+  Future<List<Map<String, dynamic>>?> getPengumpulanTugas(int tugasId) async {
+    try {
+      final token = await storage.read(key: 'token'); // Mendapatkan token dari secure storage
+
+      if (token == null) {
+        throw Exception("Token tidak tersedia.");
+      }
+
+      final url = Uri.parse('$baseUrl/tugas/$tugasId/pengumpulan');
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Decode response body menjadi List
+        final List<dynamic> decodedData = json.decode(response.body)['data'];
+        return decodedData.cast<Map<String, dynamic>>(); // Mengembalikan List<Map<String, dynamic>>
+      } else {
+        throw Exception('Gagal memuat data pengumpulan tugas.');
+      }
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
   // Mendapatkan daftar pelatihan yang diikuti oleh pengguna
   Future<List<dynamic>?> getUserTrainings() async {
     final token = await storage.read(key: 'token');
@@ -556,7 +585,26 @@ class ApiService {
       return null;
     }
   }
+  Future<bool> createTugas(String judul, String deskripsi, int pelatihanId, String batasWaktu) async {
+    final token =
+    await storage.read(key: 'token'); // Ambil token dari penyimpanan aman
 
+    final response = await http.post(
+      Uri.parse('$baseUrl/tugas'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode({
+        'judul': judul,
+        'deskripsi': deskripsi,
+        'pelatihan_id': pelatihanId,
+        'batas_waktu': batasWaktu,
+      }),
+    );
+
+    return response.statusCode == 201; // Mengembalikan true jika berhasil
+  }
   // Helper method to get token
   Future<String?> getToken() async {
     return await storage.read(key: 'token');

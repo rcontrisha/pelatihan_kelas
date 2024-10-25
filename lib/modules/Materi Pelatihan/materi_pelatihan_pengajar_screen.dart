@@ -123,11 +123,12 @@ class _MateriPelatihanPengajarScreenState
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    final pickedFile =
-                        await _picker.pickImage(source: ImageSource.gallery);
-                    if (pickedFile != null) {
+                    FilePickerResult? result =
+                    await FilePicker.platform.pickFiles();
+
+                    if (result != null) {
                       setState(() {
-                        _selectedFilePath = pickedFile.path;
+                        _selectedFilePath = result.files.single.path;
                       });
                     }
                   },

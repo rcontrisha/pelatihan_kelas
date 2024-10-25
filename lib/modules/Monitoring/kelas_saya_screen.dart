@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:pelatihan_kelas/modules/Tugas%20Pelatihan/tugas_pengajar_screen.dart';
 import 'package:pelatihan_kelas/modules/Tugas%20Pelatihan/tugas_saya_screen.dart';
 import '../Materi Pelatihan/materi_pelatihan_screen.dart';
 import '../Materi Pelatihan/materi_pelatihan_pengajar_screen.dart'; // Import halaman materi untuk pengajar
@@ -35,11 +36,11 @@ class _KelasSayaScreenState extends State<KelasSayaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Kelas Saya'),
+        title: const Text('Monitoring'),
       ),
       body: Column(
         children: [
-          _buildTabBar(),
+
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(16),
@@ -54,20 +55,7 @@ class _KelasSayaScreenState extends State<KelasSayaScreen> {
     );
   }
 
-  Widget _buildTabBar() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildTabButton('Beranda', false),
-          _buildTabButton('Monitoring', true),
-          _buildTabButton('Akun', false),
-          _buildTabButton('Layanan', false),
-        ],
-      ),
-    );
-  }
+
 
   Widget _buildTabButton(String text, bool isActive) {
     return Container(
@@ -130,7 +118,7 @@ class _KelasSayaScreenState extends State<KelasSayaScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => TugasSayaScreen(
+                  builder: (context) => DaftarTugasScreen(
                         pelatihanId: widget.pelatihanId,
                       )),
             );
