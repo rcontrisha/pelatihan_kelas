@@ -250,7 +250,7 @@ class _MateriPelatihanScreenState extends State<MateriPelatihanScreen> {
   }
 
   String getFullFileUrl(String filePath) {
-    const String baseUrl = "http://192.168.114.163:8000";
+    const String baseUrl = "http://192.168.153.163:8000";
     return "$baseUrl/storage/$filePath";
   }
 }

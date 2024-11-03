@@ -24,7 +24,8 @@ class _DaftarTugasScreenState extends State<DaftarTugasScreen> {
   }
 
   Future<void> _getTugasList() async {
-    final tugasList = await _apiService.getTugasByPelatihanId(widget.pelatihanId);
+    final tugasList =
+        await _apiService.getTugasByPelatihanId(widget.pelatihanId);
     if (tugasList != null) {
       setState(() {
         _tugasList = tugasList;
@@ -41,18 +42,18 @@ class _DaftarTugasScreenState extends State<DaftarTugasScreen> {
       body: _tugasList.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: _tugasList.length,
-        itemBuilder: (context, index) {
-          final tugas = _tugasList[index];
-          return _buildTugasItem(
-            tugas['id'], // Tambahkan ID tugas
-            tugas['judul'],
-            tugas['deskripsi'],
-            tugas['batas_waktu'],
-          );
-        },
-      ),
+              padding: const EdgeInsets.all(16),
+              itemCount: _tugasList.length,
+              itemBuilder: (context, index) {
+                final tugas = _tugasList[index];
+                return _buildTugasItem(
+                  tugas['id'], // Tambahkan ID tugas
+                  tugas['judul'],
+                  tugas['deskripsi'],
+                  tugas['batas_waktu'],
+                );
+              },
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -61,7 +62,8 @@ class _DaftarTugasScreenState extends State<DaftarTugasScreen> {
               builder: (context) =>
                   BuatTugasScreen(pelatihanId: widget.pelatihanId),
             ),
-          ).then((_) => _getTugasList()); // Refresh daftar tugas setelah tugas baru dibuat
+          ).then((_) =>
+              _getTugasList()); // Refresh daftar tugas setelah tugas baru dibuat
         },
         child: const Icon(Icons.add),
         tooltip: 'Tambah Tugas Baru',
@@ -70,13 +72,15 @@ class _DaftarTugasScreenState extends State<DaftarTugasScreen> {
   }
 
   // Modifikasi untuk navigasi ke halaman pengumpulan tugas saat diklik
-  Widget _buildTugasItem(int tugasId, String title, String description, String deadline) {
+  Widget _buildTugasItem(
+      int tugasId, String title, String description, String deadline) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PengumpulanTugasScreen(tugasId: tugasId), // Navigasi ke PengumpulanTugasScreen
+            builder: (context) => PengumpulanTugasScreen(
+                tugasId: tugasId), // Navigasi ke PengumpulanTugasScreen
           ),
         );
       },
@@ -97,7 +101,8 @@ class _DaftarTugasScreenState extends State<DaftarTugasScreen> {
               const SizedBox(height: 8),
               Text(description),
               const SizedBox(height: 8),
-              Text('Deadline: ${DateFormat('dd MMM yyyy').format(DateTime.parse(deadline))}'),
+              Text(
+                  'Deadline: ${DateFormat('dd MMM yyyy').format(DateTime.parse(deadline))}'),
             ],
           ),
         ),
@@ -128,7 +133,8 @@ class _PengumpulanTugasScreenState extends State<PengumpulanTugasScreen> {
   }
 
   Future<void> _getPengumpulanTugas() async {
-    final pengumpulanList = await _apiService.getPengumpulanTugas(widget.tugasId);
+    final pengumpulanList =
+        await _apiService.getPengumpulanTugas(widget.tugasId);
     if (pengumpulanList != null) {
       setState(() {
         _pengumpulanList = pengumpulanList;
@@ -149,13 +155,13 @@ class _PengumpulanTugasScreenState extends State<PengumpulanTugasScreen> {
       body: _pengumpulanList.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: _pengumpulanList.length,
-        itemBuilder: (context, index) {
-          final pengumpulan = _pengumpulanList[index];
-          return _buildPengumpulanItem(pengumpulan);
-        },
-      ),
+              padding: const EdgeInsets.all(16),
+              itemCount: _pengumpulanList.length,
+              itemBuilder: (context, index) {
+                final pengumpulan = _pengumpulanList[index];
+                return _buildPengumpulanItem(pengumpulan);
+              },
+            ),
     );
   }
 
@@ -169,7 +175,7 @@ class _PengumpulanTugasScreenState extends State<PengumpulanTugasScreen> {
           children: [
             CircleAvatar(
               backgroundImage: NetworkImage(
-                  'https://yourdomain.com/${pengumpulan['profile']}'), // Gambar profil siswa
+                  'http://192.168.153.163:8000/storage/${pengumpulan['profile']}'), // Gambar profil siswa
               radius: 30,
             ),
             const SizedBox(width: 16),
@@ -219,9 +225,10 @@ class _PengumpulanTugasScreenState extends State<PengumpulanTugasScreen> {
   void _downloadTugas(String downloadLink) {
     // Implementasikan logika download sesuai dengan platform (mobile atau web).
     // Contoh penggunaan url_launcher untuk mendownload file di mobile/web:
-    // launch('https://yourdomain.com/$downloadLink');
+    // launch('http://192.168.153.163:8000/$downloadLink');
   }
 }
+
 class BuatTugasScreen extends StatefulWidget {
   final int pelatihanId;
 
@@ -253,14 +260,16 @@ class _BuatTugasScreenState extends State<BuatTugasScreen> {
       judul,
       deskripsi,
       widget.pelatihanId,
-      _selectedDeadline!.toIso8601String(), // Mengirim deadline sebagai string ISO 8601
+      _selectedDeadline!
+          .toIso8601String(), // Mengirim deadline sebagai string ISO 8601
     );
 
     if (response != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Tugas berhasil dibuat!')),
       );
-      Navigator.pop(context); // Kembali ke halaman sebelumnya setelah tugas diunggah
+      Navigator.pop(
+          context); // Kembali ke halaman sebelumnya setelah tugas diunggah
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Gagal membuat tugas!')),

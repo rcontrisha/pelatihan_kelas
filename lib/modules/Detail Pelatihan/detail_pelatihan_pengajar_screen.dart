@@ -20,7 +20,7 @@ class _DetailPelatihanPengajarScreenState
   late Future<Map<String, dynamic>?> _pelatihanDetail;
 
   String baseUrl =
-      'http://192.168.114.163:8000/storage/'; // Ganti dengan URL basis API Anda
+      'http://192.168.153.163:8000/storage/'; // Ganti dengan URL basis API Anda
 
   @override
   void initState() {

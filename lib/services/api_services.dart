@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 
 class ApiService {
   final String baseUrl =
-      'http://192.168.114.163:8000/api'; // Ganti dengan URL API Anda
+      'http://192.168.153.163:8000/api'; // Ganti dengan URL API Anda
   final FlutterSecureStorage storage = FlutterSecureStorage();
 
   // Registrasi pengguna
@@ -139,7 +139,8 @@ class ApiService {
 
   Future<List<Map<String, dynamic>>?> getPengumpulanTugas(int tugasId) async {
     try {
-      final token = await storage.read(key: 'token'); // Mendapatkan token dari secure storage
+      final token = await storage.read(
+          key: 'token'); // Mendapatkan token dari secure storage
 
       if (token == null) {
         throw Exception("Token tidak tersedia.");
@@ -157,7 +158,9 @@ class ApiService {
       if (response.statusCode == 200) {
         // Decode response body menjadi List
         final List<dynamic> decodedData = json.decode(response.body)['data'];
-        return decodedData.cast<Map<String, dynamic>>(); // Mengembalikan List<Map<String, dynamic>>
+        print(decodedData);
+        return decodedData.cast<
+            Map<String, dynamic>>(); // Mengembalikan List<Map<String, dynamic>>
       } else {
         throw Exception('Gagal memuat data pengumpulan tugas.');
       }
@@ -166,6 +169,7 @@ class ApiService {
       return null;
     }
   }
+
   // Mendapatkan daftar pelatihan yang diikuti oleh pengguna
   Future<List<dynamic>?> getUserTrainings() async {
     final token = await storage.read(key: 'token');
@@ -266,72 +270,53 @@ class ApiService {
     }
   }
 
-  // Fungsi untuk mengedit materi
-  Future<bool> updateMateri(
-      int id, String judul, String deskripsi, String linkVideo,
-      {String? filePath}) async {
-    if (filePath == null) {
-      // Jika tidak ada file, gunakan http.put
-      return await updateMateriWithoutFile(id, judul, deskripsi, linkVideo);
-    } else {
-      // Jika ada file, gunakan MultipartRequest
-      return await updateMateriWithFile(
-          id, judul, deskripsi, linkVideo, filePath);
-    }
-  }
-
-  Future<bool> updateMateriWithoutFile(
+  // Fungsi untuk memperbarui informasi materi
+  Future<bool> updateMateriInfo(
       int id, String judul, String deskripsi, String linkVideo) async {
     final token = await storage.read(key: 'token');
 
-    var headers = {
-      'Authorization': 'Bearer $token',
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    };
-
-    var body = jsonEncode({
-      'judul': judul,
-      'deskripsi': deskripsi,
-      'link_video': linkVideo.isNotEmpty ? linkVideo : null,
-    });
-
-    var response = await http.put(
-      Uri.parse('$baseUrl/materi/$id'),
-      headers: headers,
-      body: body,
+    final response = await http.put(
+      Uri.parse('$baseUrl/materi/info/$id'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'judul': judul,
+        'deskripsi': deskripsi,
+        'link_video': linkVideo,
+      }),
     );
 
-    print('Response status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
-    return response.statusCode == 200;
+    if (response.statusCode == 200) {
+      return true; // Pembaruan berhasil
+    } else {
+      print('Failed to update materi info: ${response.body}');
+      return false; // Pembaruan gagal
+    }
   }
 
-  Future<bool> updateMateriWithFile(int id, String judul, String deskripsi,
-      String linkVideo, String filePath) async {
+  // Fungsi untuk mengupload file materi
+  Future<bool> uploadMateriFile(int id, String filePath) async {
     final token = await storage.read(key: 'token');
+    final fileBytes = await File(filePath).readAsBytes();
 
-    var request =
-        http.MultipartRequest('PUT', Uri.parse('$baseUrl/materi/$id'));
-    request.headers['Authorization'] = 'Bearer $token';
-    request.headers['Accept'] = 'application/json';
+    final response = await http.post(
+      Uri.parse('$baseUrl/materi/upload/$id'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/octet-stream',
+        'X-Filename': filePath.split('/').last,
+      },
+      body: fileBytes,
+    );
 
-    request.fields['judul'] = judul;
-    request.fields['deskripsi'] = deskripsi;
-    if (linkVideo.isNotEmpty) {
-      request.fields['link_video'] = linkVideo;
+    if (response.statusCode == 200) {
+      return true; // Upload berhasil
+    } else {
+      print('Failed to upload file: ${response.body}');
+      return false; // Upload gagal
     }
-
-    request.files.add(await http.MultipartFile.fromPath('file_path', filePath));
-
-    var response = await request.send();
-
-    print('Response status code: ${response.statusCode}');
-    var responseBody = await response.stream.bytesToString();
-    print('Response body: $responseBody');
-
-    return response.statusCode == 200;
   }
 
   // Mendapatkan daftar tugas berdasarkan ID pelatihan
@@ -585,9 +570,11 @@ class ApiService {
       return null;
     }
   }
-  Future<bool> createTugas(String judul, String deskripsi, int pelatihanId, String batasWaktu) async {
+
+  Future<bool> createTugas(String judul, String deskripsi, int pelatihanId,
+      String batasWaktu) async {
     final token =
-    await storage.read(key: 'token'); // Ambil token dari penyimpanan aman
+        await storage.read(key: 'token'); // Ambil token dari penyimpanan aman
 
     final response = await http.post(
       Uri.parse('$baseUrl/tugas'),
@@ -605,6 +592,7 @@ class ApiService {
 
     return response.statusCode == 201; // Mengembalikan true jika berhasil
   }
+
   // Helper method to get token
   Future<String?> getToken() async {
     return await storage.read(key: 'token');

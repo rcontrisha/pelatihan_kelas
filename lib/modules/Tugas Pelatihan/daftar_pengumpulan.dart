@@ -24,7 +24,7 @@ class _PengumpulanTugasScreenState extends State<PengumpulanTugasScreen> {
 
   Future<void> _getPengumpulanTugas() async {
     final pengumpulanList =
-    await _apiService.getPengumpulanTugas(widget.tugasId);
+        await _apiService.getPengumpulanTugas(widget.tugasId);
     if (pengumpulanList != null) {
       setState(() {
         _pengumpulanList = pengumpulanList;
@@ -45,17 +45,21 @@ class _PengumpulanTugasScreenState extends State<PengumpulanTugasScreen> {
       body: _pengumpulanList.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: _pengumpulanList.length,
-        itemBuilder: (context, index) {
-          final pengumpulan = _pengumpulanList[index];
-          return _buildPengumpulanItem(pengumpulan);
-        },
-      ),
+              padding: const EdgeInsets.all(16),
+              itemCount: _pengumpulanList.length,
+              itemBuilder: (context, index) {
+                final pengumpulan = _pengumpulanList[index];
+                return _buildPengumpulanItem(pengumpulan);
+              },
+            ),
     );
   }
 
   Widget _buildPengumpulanItem(Map<String, dynamic> pengumpulan) {
+    String baseUrl =
+        'http://192.168.153.163:8000/storage/'; // Ganti dengan URL server Anda
+    print('$baseUrl${pengumpulan['profile']}');
+
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       child: Padding(
@@ -64,9 +68,13 @@ class _PengumpulanTugasScreenState extends State<PengumpulanTugasScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CircleAvatar(
-              backgroundImage: NetworkImage(
-                  'https://yourdomain.com/${pengumpulan['profile']}'), // Gambar profil siswa
-              radius: 30,
+              backgroundImage: pengumpulan['profile'] != null
+                  ? NetworkImage('$baseUrl${pengumpulan['profile']}')
+                  : null, // URL foto profil peserta
+              child: pengumpulan['profile'] == null
+                  ? const Icon(
+                      Icons.person) // Icon default jika foto tidak tersedia
+                  : null,
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -115,6 +123,6 @@ class _PengumpulanTugasScreenState extends State<PengumpulanTugasScreen> {
   void _downloadTugas(String downloadLink) {
     // Implementasikan logika download sesuai dengan platform (mobile atau web).
     // Contoh penggunaan url_launcher untuk mendownload file di mobile/web:
-    // launch('https://yourdomain.com/$downloadLink');
+    // launch('http://192.168.153.163:8000/$downloadLink');
   }
 }
