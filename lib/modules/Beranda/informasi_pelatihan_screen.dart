@@ -19,7 +19,7 @@ class _InformasiPelatihanScreenState extends State<InformasiPelatihanScreen> {
       _pelatihans; // Future untuk menampung data pelatihan
 
   String baseUrl =
-      'http://192.168.153.163:8000/storage/'; // Ganti dengan URL basis API Anda
+      'http://192.168.1.11:8000/storage/'; // Ganti dengan URL basis API Anda
 
   @override
   void initState() {

@@ -19,7 +19,7 @@ class AkunScreen extends StatefulWidget {
 
 class _AkunScreenState extends State<AkunScreen> {
   String baseUrl =
-      'http://192.168.153.163:8000/storage/'; // Ganti dengan URL server Anda
+      'http://192.168.1.11:8000/storage/'; // Ganti dengan URL server Anda
   ApiService apiService = ApiService();
   Map<String, dynamic>? userProfile;
   XFile? profileImage; // Variabel untuk menyimpan gambar profil
@@ -33,7 +33,7 @@ class _AkunScreenState extends State<AkunScreen> {
 
   Future<void> _getProfile() async {
     userProfile = await apiService.getProfile();
-    print(userProfile); // Tambahkan print untuk memeriksa respons API
+    print('P: ${userProfile}'); // Tambahkan print untuk memeriksa respons API
     setState(() {
       profileImage = userProfile!['profile_picture'] != null
           ? XFile(userProfile!['profile_picture'])

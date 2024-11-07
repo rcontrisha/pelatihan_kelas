@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 
 class ApiService {
   final String baseUrl =
-      'http://192.168.153.163:8000/api'; // Ganti dengan URL API Anda
+      'http://192.168.1.11:8000/api'; // Ganti dengan URL API Anda
   final FlutterSecureStorage storage = FlutterSecureStorage();
 
   // Registrasi pengguna
@@ -70,6 +70,7 @@ class ApiService {
       },
     );
     await storage.delete(key: 'token');
+    await storage.delete(key: 'role');
   }
 
   // Mendapatkan daftar pelatihan
@@ -243,6 +244,7 @@ class ApiService {
 
     if (response.statusCode == 201) {
       final responseBody = await response.stream.bytesToString();
+      print(responseBody);
       return jsonDecode(responseBody);
     } else {
       // Handle error response

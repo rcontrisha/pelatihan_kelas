@@ -175,7 +175,7 @@ class _PengumpulanTugasScreenState extends State<PengumpulanTugasScreen> {
           children: [
             CircleAvatar(
               backgroundImage: NetworkImage(
-                  'http://192.168.153.163:8000/storage/${pengumpulan['profile']}'), // Gambar profil siswa
+                  'http://192.168.1.11:8000/storage/${pengumpulan['profile']}'), // Gambar profil siswa
               radius: 30,
             ),
             const SizedBox(width: 16),
@@ -225,7 +225,7 @@ class _PengumpulanTugasScreenState extends State<PengumpulanTugasScreen> {
   void _downloadTugas(String downloadLink) {
     // Implementasikan logika download sesuai dengan platform (mobile atau web).
     // Contoh penggunaan url_launcher untuk mendownload file di mobile/web:
-    // launch('http://192.168.153.163:8000/$downloadLink');
+    // launch('http://192.168.1.11:8000/$downloadLink');
   }
 }
 

@@ -57,7 +57,7 @@ class _PengumpulanTugasScreenState extends State<PengumpulanTugasScreen> {
 
   Widget _buildPengumpulanItem(Map<String, dynamic> pengumpulan) {
     String baseUrl =
-        'http://192.168.153.163:8000/storage/'; // Ganti dengan URL server Anda
+        'http://192.168.1.11:8000/storage/'; // Ganti dengan URL server Anda
     print('$baseUrl${pengumpulan['profile']}');
 
     return Card(
@@ -123,6 +123,6 @@ class _PengumpulanTugasScreenState extends State<PengumpulanTugasScreen> {
   void _downloadTugas(String downloadLink) {
     // Implementasikan logika download sesuai dengan platform (mobile atau web).
     // Contoh penggunaan url_launcher untuk mendownload file di mobile/web:
-    // launch('http://192.168.153.163:8000/$downloadLink');
+    // launch('http://192.168.1.11:8000/$downloadLink');
   }
 }

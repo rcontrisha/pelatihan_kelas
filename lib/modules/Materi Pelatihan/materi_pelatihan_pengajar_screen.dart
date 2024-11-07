@@ -42,7 +42,7 @@ class _MateriPelatihanPengajarScreenState
           ),
         ],
       ),
-      body: FutureBuilder<List<dynamic>?>( 
+      body: FutureBuilder<List<dynamic>?>(
         future: _materiListFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -98,17 +98,13 @@ class _MateriPelatihanPengajarScreenState
   }
 
   void _showAddMateriDialog() {
-    // Reset fields for new material
-    _judul = '';
-    _deskripsi = '';
-    _linkVideo = '';
-
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: const Text('Tambah Materi'),
           content: SingleChildScrollView(
+            // Memungkinkan scroll jika konten panjang
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -125,6 +121,21 @@ class _MateriPelatihanPengajarScreenState
                       const InputDecoration(labelText: 'Link Video (Opsional)'),
                   onChanged: (value) => _linkVideo = value,
                 ),
+                ElevatedButton(
+                  onPressed: () async {
+                    FilePickerResult? result =
+                        await FilePicker.platform.pickFiles();
+
+                    if (result != null) {
+                      setState(() {
+                        _selectedFilePath = result.files.single.path;
+                      });
+                    }
+                  },
+                  child: const Text('Pilih File (Opsional)'),
+                ),
+                if (_selectedFilePath != null)
+                  Text('Selected File: $_selectedFilePath'),
               ],
             ),
           ),
@@ -132,7 +143,7 @@ class _MateriPelatihanPengajarScreenState
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                _uploadMateri(); // Upload the new material
+                _uploadMateri();
               },
               child: const Text('Upload'),
             ),
@@ -184,7 +195,8 @@ class _MateriPelatihanPengajarScreenState
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                _updateMateri(materi['id']); // Panggil fungsi untuk update materi
+                _updateMateri(
+                    materi['id']); // Panggil fungsi untuk update materi
               },
               child: const Text('Simpan'),
             ),
@@ -199,7 +211,8 @@ class _MateriPelatihanPengajarScreenState
   }
 
   Future<void> _updateMateri(int materiId) async {
-    if (_judul.isNotEmpty) { // hanya periksa judul yang dibutuhkan
+    if (_judul.isNotEmpty) {
+      // hanya periksa judul yang dibutuhkan
       try {
         var response = await _apiService.updateMateriInfo(
           materiId,
@@ -240,6 +253,7 @@ class _MateriPelatihanPengajarScreenState
           _judul,
           _deskripsi,
           _linkVideo, // Kirim link video jika ada
+          filePath: _selectedFilePath, // Kirim file path untuk diupload
         );
 
         if (response != null) {
@@ -248,6 +262,7 @@ class _MateriPelatihanPengajarScreenState
           setState(() {
             _materiListFuture =
                 _apiService.getMaterisByPelatihanId(widget.pelatihanId);
+            _selectedFilePath = null; // Reset file path
             _judul = '';
             _deskripsi = '';
             _linkVideo = ''; // Reset link video
@@ -274,7 +289,8 @@ class _MateriPelatihanPengajarScreenState
 
       if (_selectedFilePath != null) {
         try {
-          var response = await _apiService.uploadMateriFile(materiId, _selectedFilePath!);
+          var response =
+              await _apiService.uploadMateriFile(materiId, _selectedFilePath!);
           if (response != null) {
             ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('File berhasil diunggah')));

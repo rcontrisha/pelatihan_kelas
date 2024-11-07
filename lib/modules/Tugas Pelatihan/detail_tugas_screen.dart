@@ -46,7 +46,16 @@ class _DetailTugasScreenState extends State<DetailTugasScreen> {
     Duration difference = batasWaktu.difference(sekarang);
 
     if (difference.isNegative) {
-      return 'Tenggat waktu telah berlalu';
+      Duration terlambat = sekarang.difference(batasWaktu);
+      if (terlambat.inDays > 0) {
+        return 'Terlambat ${terlambat.inDays} hari';
+      } else if (terlambat.inHours > 0) {
+        return 'Terlambat ${terlambat.inHours} jam';
+      } else if (terlambat.inMinutes > 0) {
+        return 'Terlambat ${terlambat.inMinutes} menit';
+      } else {
+        return 'Baru saja terlambat';
+      }
     } else if (difference.inDays > 0) {
       return '${difference.inDays} hari tersisa';
     } else if (difference.inHours > 0) {
@@ -129,14 +138,32 @@ class _DetailTugasScreenState extends State<DetailTugasScreen> {
               Duration selisih = batasWaktu.difference(waktuPengumpulan);
 
               if (selisih.isNegative) {
-                waktuLebihCepat = 'Tugas dikumpulkan terlambat';
+                // Jika tugas dikumpulkan terlambat
+                Duration keterlambatan =
+                    waktuPengumpulan.difference(batasWaktu);
+                if (keterlambatan.inDays > 0) {
+                  waktuLebihCepat =
+                      'Tugas dikumpulkan terlambat ${keterlambatan.inDays} hari';
+                } else if (keterlambatan.inHours > 0) {
+                  waktuLebihCepat =
+                      'Tugas dikumpulkan terlambat ${keterlambatan.inHours} jam';
+                } else if (keterlambatan.inMinutes > 0) {
+                  waktuLebihCepat =
+                      'Tugas dikumpulkan terlambat ${keterlambatan.inMinutes} menit';
+                } else {
+                  waktuLebihCepat = 'Tugas baru saja terlambat';
+                }
               } else {
+                // Jika tugas dikumpulkan lebih cepat atau tepat waktu
                 if (selisih.inDays > 0) {
-                  waktuLebihCepat = '${selisih.inDays} hari lebih cepat';
+                  waktuLebihCepat =
+                      'Tugas dikumpulkan ${selisih.inDays} hari lebih cepat';
                 } else if (selisih.inHours > 0) {
-                  waktuLebihCepat = '${selisih.inHours} jam lebih cepat';
+                  waktuLebihCepat =
+                      'Tugas dikumpulkan ${selisih.inHours} jam lebih cepat';
                 } else if (selisih.inMinutes > 0) {
-                  waktuLebihCepat = '${selisih.inMinutes} menit lebih cepat';
+                  waktuLebihCepat =
+                      'Tugas dikumpulkan ${selisih.inMinutes} menit lebih cepat';
                 } else {
                   waktuLebihCepat = 'Tugas dikumpulkan tepat waktu';
                 }
@@ -167,22 +194,18 @@ class _DetailTugasScreenState extends State<DetailTugasScreen> {
                         style: const TextStyle(fontSize: 16),
                       ),
                       const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Text(
-                            'Tenggat: ${formatTanggal(widget.tugas['batas_waktu'])}',
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w500),
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            '(${waktuTersisa(widget.tugas['batas_waktu'])})',
-                            style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.red),
-                          ),
-                        ],
+                      Text(
+                        'Tenggat: ${formatTanggal(widget.tugas['batas_waktu'])}',
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        '(${waktuTersisa(widget.tugas['batas_waktu'])})',
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.red),
                       ),
                       const SizedBox(height: 32),
                       _buildUploadContainer(context),
